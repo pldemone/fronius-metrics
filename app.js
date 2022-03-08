@@ -143,12 +143,26 @@ async function getData() {
   if(inverterHost) {
     const inverterJson = await fronius.GetPowerFlowRealtimeDataData(inverterOptions)
     inverterStats = {
-      total_watt: inverterJson.Body.Data.Site.E_Total,
       actual_grid: inverterJson.Body.Data.Site.P_Grid,
       actual_load: inverterJson.Body.Data.Site.P_Load,
       actual_pv: inverterJson.Body.Data.Site.P_PV,
+      actual_scons: inverterJson.Body.Data.Site.rel_SelfConsumption,
+      actual_auton: inverterJson.Body.Data.Site.rel_Autonomy,
     }
   }
+
+  inverterStats.actual_load = inverterStats.actual_load * -1;
+  inverterStats.actual_scons = 0;
+  if (!inverterStats.actual_grid) { inverterStats.actual_grid = 0 }
+  if (!inverterStats.actual_load) { inverterStats.actual_load = 0 }
+  if (!inverterStats.actual_pv) { inverterStats.actual_pv = 0 }
+  if (!inverterStats.actual_scons) { inverterStats.actual_scons = 0 }
+  if (!inverterStats.actual_auton) { inverterStats.actual_auton = 0 }
+
+  // console.log('PV: %d', inverterStats.actual_pv);
+  // console.log('LOAD: %d', inverterStats.actual_load);
+  // console.log('SCONS: %d', inverterStats.actual_scons);
+
   let heaterstats = {}
   if(heaterHost) {
     const heaterResp = await axios.get("http://" + heaterHost + "/values.xml")
@@ -176,6 +190,8 @@ async function getAndSend() {
     if(inverterHost) actualGrid.set(data.actual_grid)
     if(inverterHost) actualLoad.set(data.actual_load)
     if(inverterHost) actualPV.set(data.actual_pv)
+    if(inverterHost) actualPV.set(data.actual_scons)
+    if(inverterHost) actualPV.set(data.actual_auton)
     if(heaterHost) heaterHeatPower.set(data.heater_heat_power)
     if(heaterHost) heaterTemp.set(data.heater_temp)
     if(heaterHost) heaterReglerOut.set(data.heater_regler_out)
