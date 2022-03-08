@@ -1,0 +1,13 @@
+[Unit]
+Description=Fronius to MQTT gateway
+
+[Service]
+Type=simple
+User=fronius
+WorkingDirectory=/opt/fronius-metrics.git
+ExecStart=/usr/bin/node app.js
+EnvironmentFile=/etc/fronius/fronius.conf
+
+
+[Install]
+WantedBy=multi-user.target
