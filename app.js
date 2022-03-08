@@ -152,7 +152,6 @@ async function getData() {
   }
 
   inverterStats.actual_load = inverterStats.actual_load * -1;
-  inverterStats.actual_scons = 0;
   if (!inverterStats.actual_grid) { inverterStats.actual_grid = 0 }
   if (!inverterStats.actual_load) { inverterStats.actual_load = 0 }
   if (!inverterStats.actual_pv) { inverterStats.actual_pv = 0 }
